@@ -38,7 +38,7 @@ public class Vormerkkarte
         _warteschlange.remove(0);
     }
     
-    public void enterferneKunde(int platz)
+    public void entferneKunde(int platz)
     {
         _warteschlange.remove(platz);
     }

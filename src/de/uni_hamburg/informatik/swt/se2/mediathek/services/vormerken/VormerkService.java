@@ -1,8 +1,10 @@
 package de.uni_hamburg.informatik.swt.se2.mediathek.services.vormerken;
 
+import java.util.HashMap;
+
 import de.uni_hamburg.informatik.swt.se2.mediathek.materialien.Kunde;
 import de.uni_hamburg.informatik.swt.se2.mediathek.materialien.medien.Medium;
-import de.uni_hamburg.informatik.swt.se2.mediathek.materialien.VormerKarte;
+import de.uni_hamburg.informatik.swt.se2.mediathek.materialien.Vormerkkarte;
 
 public interface VormerkService
 {
@@ -55,11 +57,11 @@ public interface VormerkService
 	 * @param medium
 	 * 
 	**/
-	public VormerkKarte getVormerkkarte(Medium medium);
+	public Vormerkkarte getVormerkkarte(Medium medium);
 
 	/**
 	 * Gibt die Liste der Vormerkungen zurück
 	 * @return Alle Vormerkkarten
 	**/
-	public Map<Medium, VormerkKarte> getVormerkungen();
+	public HashMap<Medium, Vormerkkarte> getVormerkungen();
 }
