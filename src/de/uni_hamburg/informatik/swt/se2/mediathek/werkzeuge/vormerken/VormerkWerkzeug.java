@@ -12,6 +12,7 @@ import de.uni_hamburg.informatik.swt.se2.mediathek.services.ServiceObserver;
 import de.uni_hamburg.informatik.swt.se2.mediathek.services.kundenstamm.KundenstammService;
 import de.uni_hamburg.informatik.swt.se2.mediathek.services.medienbestand.MedienbestandService;
 import de.uni_hamburg.informatik.swt.se2.mediathek.services.verleih.VerleihService;
+import de.uni_hamburg.informatik.swt.se2.mediathek.services.vormerken.VormerkService;
 import de.uni_hamburg.informatik.swt.se2.mediathek.werkzeuge.SubWerkzeugObserver;
 import de.uni_hamburg.informatik.swt.se2.mediathek.werkzeuge.subwerkzeuge.kundenauflister.KundenauflisterWerkzeug;
 import de.uni_hamburg.informatik.swt.se2.mediathek.werkzeuge.subwerkzeuge.kundendetailanzeiger.KundenDetailAnzeigerWerkzeug;
@@ -27,36 +28,13 @@ import de.uni_hamburg.informatik.swt.se2.mediathek.werkzeuge.subwerkzeuge.vormer
  */
 public class VormerkWerkzeug
 {
-
-    /**
-     * Die UI-Komponente der Ausleihe.
-     */
-    private final VormerkUI _vormerkUI;
-
-    /**
-     * Der Service zum Ausleihen von Medien.
-     */
-    private final VerleihService _verleihService;
-
-    /**
-     * Das Sub-Werkzeug zum Darstellen und Selektieren der Kunden.
-     */
-    private KundenauflisterWerkzeug _kundenAuflisterWerkzeug;
-
-    /**
-     * Das Sub-Werkzeug zum Darstellen und Selektieren der Medien.
-     */
-    private VormerkMedienauflisterWerkzeug _medienAuflisterWerkzeug;
-
-    /**
-     * Das Sub-Werkzeug zum Anzeigen der Details der selektieten Medien.
-     */
-    private MedienDetailAnzeigerWerkzeug _medienDetailAnzeigerWerkzeug;
-
-    /**
-     * Das Sub-Werkzeug zum Anzeigen der Details des selektieten Kunden.
-     */
-    private KundenDetailAnzeigerWerkzeug _kundenDetailAnzeigerWerkzeug;
+    private final VormerkUI _vormerkUI; //Die UI-Komponente der Ausleihe.
+    private final VerleihService _verleihService; //Der Service zum Ausleihen von Medien.
+    private final VormerkService _vormerkService; //Der Service zum Vormerken von Medien.
+    private KundenauflisterWerkzeug _kundenAuflisterWerkzeug; //Das Sub-Werkzeug zum Darstellen und Selektieren der Kunden.
+    private VormerkMedienauflisterWerkzeug _medienAuflisterWerkzeug; //Das Sub-Werkzeug zum Darstellen und Selektieren der Medien.
+    private MedienDetailAnzeigerWerkzeug _medienDetailAnzeigerWerkzeug; //Das Sub-Werkzeug zum Anzeigen der Details der selektieten Medien.
+    private KundenDetailAnzeigerWerkzeug _kundenDetailAnzeigerWerkzeug; //Das Sub-Werkzeug zum Anzeigen der Details des selektieten Kunden.
 
     /**
      * Initialisiert ein neues VormerkWerkzeug. Es wird die Benutzungsoberfläche
@@ -71,14 +49,14 @@ public class VormerkWerkzeug
      * @require kundenstamm != null
      * @require verleihService != null
      */
-    public VormerkWerkzeug(MedienbestandService medienbestand,
-            KundenstammService kundenstamm, VerleihService verleihService)
+    public VormerkWerkzeug(MedienbestandService medienbestand, KundenstammService kundenstamm, VerleihService verleihService, VormerkService vormerkService)
     {
         assert medienbestand != null : "Vorbedingung verletzt: medienbestand != null";
         assert kundenstamm != null : "Vorbedingung verletzt: kundenstamm != null";
         assert verleihService != null : "Vorbedingung verletzt: verleihService != null";
 
         _verleihService = verleihService;
+        _vormerkService = vormerkService;
 
         // Subwerkzeuge erstellen
         _kundenAuflisterWerkzeug = new KundenauflisterWerkzeug(kundenstamm);
@@ -212,9 +190,18 @@ public class VormerkWerkzeug
         // TODO für Aufgabenblatt 6 (nicht löschen): Prüfung muss noch eingebaut
         // werden. Ist dies korrekt imlpementiert, wird der Vormerk-Button gemäß
         // der Anforderungen a), b), c) und e) aktiviert.
-        boolean vormerkenMoeglich = (kunde != null) && !medien.isEmpty();
-
-        return vormerkenMoeglich;
+        if(kunde != null && !medien.isEmpty())
+        {
+            return false;
+        }
+        for(Medium medium : medien)
+        {
+            if(!_vormerkService.istVormerkenMoeglich(medium))
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
