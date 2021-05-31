@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JPanel;
+import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -29,6 +30,7 @@ public class AusleiheMedienauflisterWerkzeug extends ObservableSubWerkzeug
     private AusleiheMedienauflisterUI _ui;
     private MedienbestandService _medienbestand;
     private final VerleihService _verleihService;
+    
 
     /**
      * Initialisiert ein neues AusleiheMedienauflisterWerkzeug. Es wird die
@@ -45,6 +47,7 @@ public class AusleiheMedienauflisterWerkzeug extends ObservableSubWerkzeug
     {
         assert medienbestand != null : "Vorbedingung verletzt: medienbestand != null";
         assert verleihService != null : "Vorbedingung verletzt: verleihService != null";
+        
 
         _medienbestand = medienbestand;
         _verleihService = verleihService;
@@ -86,9 +89,16 @@ public class AusleiheMedienauflisterWerkzeug extends ObservableSubWerkzeug
             // der Name des Vormerkers, an den ein Medium ausgeliehen werden
             // darf, gemäß Anforderung d).
             Kunde ersterVormerker = null;
-
+            if(_verleihService.getVormerkkarte(medium).getWarteschlange().size() > 0)
+            {
+                ersterVormerker = _verleihService.getVormerkkarte(medium).getWarteschlange().get(0);
+            }
             medienFormatierer.add(new AusleiheMedienFormatierer(medium,
-                    istVerliehen, ersterVormerker));
+                        istVerliehen, ersterVormerker));
+            
+            
+
+            
         }
         _ui.getMedienAuflisterTableModel()
             .setMedien(medienFormatierer);

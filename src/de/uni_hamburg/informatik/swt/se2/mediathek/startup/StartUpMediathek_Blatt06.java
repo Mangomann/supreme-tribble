@@ -69,6 +69,7 @@ public class StartUpMediathek_Blatt06
                     datenEinleser.getKunden());
             _verleihService = new VerleihServiceImpl(_kundenstamm,
                     _medienbestand, datenEinleser.getVerleihkarten());
+          
         }
         catch (DateiLeseException e)
         {

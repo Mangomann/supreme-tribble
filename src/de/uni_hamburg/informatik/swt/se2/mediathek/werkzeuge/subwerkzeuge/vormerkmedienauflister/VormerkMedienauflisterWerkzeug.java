@@ -8,6 +8,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import de.uni_hamburg.informatik.swt.se2.mediathek.materialien.Kunde;
+import de.uni_hamburg.informatik.swt.se2.mediathek.materialien.Vormerkkarte;
 import de.uni_hamburg.informatik.swt.se2.mediathek.materialien.medien.Medium;
 import de.uni_hamburg.informatik.swt.se2.mediathek.services.ServiceObserver;
 import de.uni_hamburg.informatik.swt.se2.mediathek.services.medienbestand.MedienbestandService;
@@ -80,14 +81,38 @@ public class VormerkMedienauflisterWerkzeug extends ObservableSubWerkzeug
         for (Medium medium : medienListe)
         {
             // TODO für Aufgabenblatt 6 (nicht löschen): Die
-            // VormerkMedienFormatierer müssen noch mit einem möglichen
+            // VormerkMedienFormatierer müssen noch mit eine
             // Entleiher und möglichen Vormerkern ausgestattet werden.
             // Ist dies korrekt implementiert, erscheinen in der Vormerkansicht
             // die Namen des Entleihers und der möglichen 3 Vormerker.
             Kunde entleiher = null;
-            Kunde vormerker1 = null;
-            Kunde vormerker2 = null;
-            Kunde vormerker3 = null;
+            // Kunde vormerker1 = null;
+            // Kunde vormerker2 = null;
+            // Kunde vormerker3 = null;
+            if(_verleihService.istVerliehen(medium))
+            {
+                entleiher = _verleihService.getVerleihkarteFuer(medium).getEntleiher();
+            }
+            // if(_verleihService.getVormerkkarte(medium).getWarteschlange().size() == 3)
+            // {
+            //     vormerker1 = _verleihService.getVormerkkarte(medium).getWarteschlange().get(0);
+            //     vormerker2 = _verleihService.getVormerkkarte(medium).getWarteschlange().get(1);
+            //     vormerker3 = _verleihService.getVormerkkarte(medium).getWarteschlange().get(2);
+            // }
+            // else if(_verleihService.getVormerkkarte(medium).getWarteschlange().size() == 2)
+            // {
+            //     vormerker1 = _verleihService.getVormerkkarte(medium).getWarteschlange().get(0);
+            //     vormerker2 = _verleihService.getVormerkkarte(medium).getWarteschlange().get(1);
+            // }
+            // else if(_verleihService.getVormerkkarte(medium).getWarteschlange().size() == 1)
+            // {
+            //     vormerker1 = _verleihService.getVormerkkarte(medium).getWarteschlange().get(0);
+            // }
+            
+            Vormerkkarte vormerkkarte = _verleihService.getVormerkkarte(medium);
+            Kunde vormerker1 = vormerkkarte.getKunde(0);
+            Kunde vormerker2 = vormerkkarte.getKunde(1);
+            Kunde vormerker3 = vormerkkarte.getKunde(2);
 
             medienFormatierer.add(new VormerkMedienFormatierer(medium,
                     entleiher, vormerker1, vormerker2, vormerker3));

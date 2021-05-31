@@ -5,6 +5,7 @@ import java.util.List;
 import de.uni_hamburg.informatik.swt.se2.mediathek.fachwerte.Datum;
 import de.uni_hamburg.informatik.swt.se2.mediathek.materialien.Kunde;
 import de.uni_hamburg.informatik.swt.se2.mediathek.materialien.Verleihkarte;
+import de.uni_hamburg.informatik.swt.se2.mediathek.materialien.Vormerkkarte;
 import de.uni_hamburg.informatik.swt.se2.mediathek.materialien.medien.Medium;
 import de.uni_hamburg.informatik.swt.se2.mediathek.services.ObservableService;
 
@@ -203,19 +204,6 @@ public interface VerleihService extends ObservableService
     boolean medienImBestand(List<Medium> medien);
 
     /**
-     * Gibt alle Verleihkarten für den angegebenen Kunden zurück.
-     * 
-     * @param kunde Ein Kunde.
-     * @return Alle Verleihkarten des angebenen Kunden. Eine leere Liste, wenn
-     *         der Kunde nichts entliehen hat.
-     * 
-     * @require kundeImBestand(kunde)
-     * 
-     * @ensure result != null
-     */
-    List<Verleihkarte> getVerleihkartenFuer(Kunde kunde);
-
-    /**
      * Gibt die Verleihkarte für das angegebene Medium zurück, oder null wenn
      * das Medium nicht verliehen ist.
      * 
@@ -223,9 +211,47 @@ public interface VerleihService extends ObservableService
      * @return Die Verleihkarte für das angegebene Medium.
      * 
      * @require istVerliehen(medium)
-     * 
      * @ensure (result != null)
      */
     Verleihkarte getVerleihkarteFuer(Medium medium);
-
+    
+    /**
+     * Merkt ein Medium für den angegebenen Kunden vor, wenn das medium nicht
+     * schon von 3 anderen Kunden vorgemekt wurde.
+     *
+     * @require medium != null
+     * @require kunde != null
+     * @require mediumImBestand(medium)
+     * @require kundeImBestand(kunde)
+     * 
+     * @param medium Das Medium, welches Vorgemerkt werden soll
+     * @param kunde Der Kunde, welcher das Medium vormerken möchte
+     */
+    void merkeVor(Medium medium, Kunde kunde);
+    
+    /**
+     * Gibt zurück ob es möglich ist für einen weiteren Kunden das angegebene Medium
+     * vorzumerken.
+     *
+     * @require medium != null
+     * @require kunde != null
+     * @require mediumImBestand(medium)
+     * @require kundeImBestand(kunde)
+     * 
+     * @param medium Das Medium auf welches überprüft werden soll
+     * @param kunde Der Kunde, welcher für den es möglich sein soll Vorzumerken
+     * @return Ist das Vormerken möglich?
+     */
+    boolean istVormerkenMoeglich(Medium medium, Kunde kunde);
+    
+    /**
+      * Gibt die Vormerkkarte zum angegebenen Medium zurück
+      *
+      * @require medium != null
+      * @require mediumImBestand(medium)
+      * @ensure (result != null)
+      *
+      * @param medium
+      */
+    Vormerkkarte getVormerkkarte(Medium medium);
 }

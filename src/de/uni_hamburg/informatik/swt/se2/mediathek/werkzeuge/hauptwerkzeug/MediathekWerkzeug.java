@@ -37,7 +37,6 @@ public class MediathekWerkzeug
      * Der Service zum Verleihen und Zurücknehmen von Medien.
      */
     private final VerleihService _verleihService;
-
     /**
      * Das AusleihWerkzeug.
      */

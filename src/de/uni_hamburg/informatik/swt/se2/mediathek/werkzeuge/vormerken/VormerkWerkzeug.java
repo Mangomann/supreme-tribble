@@ -12,7 +12,6 @@ import de.uni_hamburg.informatik.swt.se2.mediathek.services.ServiceObserver;
 import de.uni_hamburg.informatik.swt.se2.mediathek.services.kundenstamm.KundenstammService;
 import de.uni_hamburg.informatik.swt.se2.mediathek.services.medienbestand.MedienbestandService;
 import de.uni_hamburg.informatik.swt.se2.mediathek.services.verleih.VerleihService;
-import de.uni_hamburg.informatik.swt.se2.mediathek.services.vormerken.VormerkService;
 import de.uni_hamburg.informatik.swt.se2.mediathek.werkzeuge.SubWerkzeugObserver;
 import de.uni_hamburg.informatik.swt.se2.mediathek.werkzeuge.subwerkzeuge.kundenauflister.KundenauflisterWerkzeug;
 import de.uni_hamburg.informatik.swt.se2.mediathek.werkzeuge.subwerkzeuge.kundendetailanzeiger.KundenDetailAnzeigerWerkzeug;
@@ -30,7 +29,6 @@ public class VormerkWerkzeug
 {
     private final VormerkUI _vormerkUI; //Die UI-Komponente der Ausleihe.
     private final VerleihService _verleihService; //Der Service zum Ausleihen von Medien.
-    private final VormerkService _vormerkService; //Der Service zum Vormerken von Medien.
     private KundenauflisterWerkzeug _kundenAuflisterWerkzeug; //Das Sub-Werkzeug zum Darstellen und Selektieren der Kunden.
     private VormerkMedienauflisterWerkzeug _medienAuflisterWerkzeug; //Das Sub-Werkzeug zum Darstellen und Selektieren der Medien.
     private MedienDetailAnzeigerWerkzeug _medienDetailAnzeigerWerkzeug; //Das Sub-Werkzeug zum Anzeigen der Details der selektieten Medien.
@@ -49,14 +47,13 @@ public class VormerkWerkzeug
      * @require kundenstamm != null
      * @require verleihService != null
      */
-    public VormerkWerkzeug(MedienbestandService medienbestand, KundenstammService kundenstamm, VerleihService verleihService, VormerkService vormerkService)
+    public VormerkWerkzeug(MedienbestandService medienbestand, KundenstammService kundenstamm, VerleihService verleihService)
     {
         assert medienbestand != null : "Vorbedingung verletzt: medienbestand != null";
         assert kundenstamm != null : "Vorbedingung verletzt: kundenstamm != null";
         assert verleihService != null : "Vorbedingung verletzt: verleihService != null";
 
         _verleihService = verleihService;
-        _vormerkService = vormerkService;
 
         // Subwerkzeuge erstellen
         _kundenAuflisterWerkzeug = new KundenauflisterWerkzeug(kundenstamm);
@@ -190,16 +187,17 @@ public class VormerkWerkzeug
         // TODO für Aufgabenblatt 6 (nicht löschen): Prüfung muss noch eingebaut
         // werden. Ist dies korrekt imlpementiert, wird der Vormerk-Button gemäß
         // der Anforderungen a), b), c) und e) aktiviert.
-        if(kunde != null && !medien.isEmpty())
+        if(kunde == null || medien.isEmpty())
         {
             return false;
         }
         for(Medium medium : medien)
         {
-            if(!_vormerkService.istVormerkenMoeglich(medium))
+            if(!_verleihService.istVormerkenMoeglich(medium, kunde))
             {
                 return false;
             }
+            
         }
         return true;
     }
@@ -216,6 +214,12 @@ public class VormerkWerkzeug
             .getSelectedMedien();
         Kunde selectedKunde = _kundenAuflisterWerkzeug.getSelectedKunde();
         // TODO für Aufgabenblatt 6 (nicht löschen): Vormerken einbauen
+        for(int i = 0; i<selectedMedien.size(); i++)
+        {
+            Medium medium = selectedMedien.get(i);
+            _verleihService.merkeVor(medium,selectedKunde);
+        }
+        
 
     }
 
